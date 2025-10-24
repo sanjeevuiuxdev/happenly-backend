@@ -1,0 +1,34 @@
+{
+    "sourceFile": "src/routes/eventRoutes.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1760416800011,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1760418564122,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,14 +3,10 @@\n import { protect, requireRole } from '../middleware/authMiddleware.js';\n import { upload } from '../utils/upload.js';\n \n const r = Router();\n-\n r.get('/', listEvents);\n r.get('/:id', getEvent);\n-\n-// note: field name is 'media'; allow multiple files\n r.post('/', protect, requireRole('admin'), upload.array('media', 5), createEvent);\n r.patch('/:id', protect, requireRole('admin'), updateEvent);\n r.delete('/:id', protect, requireRole('admin'), removeEvent);\n-\n export default r;\n"
+                },
+                {
+                    "date": 1760510698040,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,22 @@\n import { Router } from 'express';\n-import { listEvents, getEvent, createEvent, updateEvent, removeEvent } from '../controllers/eventController.js';\n import { protect, requireRole } from '../middleware/authMiddleware.js';\n-import { upload } from '../utils/upload.js';\n+import {\n+  createEvent,\n+  updateEvent,\n+  deleteEvent,\n+  getAllEvents,\n+  getEventById,\n+} from '../controllers/eventController.js';\n \n const r = Router();\n-r.get('/', listEvents);\n-r.get('/:id', getEvent);\n-r.post('/', protect, requireRole('admin'), upload.array('media', 5), createEvent);\n-r.patch('/:id', protect, requireRole('admin'), updateEvent);\n-r.delete('/:id', protect, requireRole('admin'), removeEvent);\n+\n+// public or user routes\n+r.get('/', getAllEvents);\n+r.get('/:id', getEventById);\n+\n+// admin routes\n+r.post('/', protect, requireRole('admin'), createEvent);\n+r.put('/:id', protect, requireRole('admin'), updateEvent);\n+r.delete('/:id', protect, requireRole('admin'), deleteEvent);\n+\n export default r;\n"
+                },
+                {
+                    "date": 1760511101369,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,22 +1,12 @@\n import { Router } from 'express';\n+import { listEvents, getEvent, createEvent, updateEvent, removeEvent } from '../controllers/eventController.js';\n import { protect, requireRole } from '../middleware/authMiddleware.js';\n-import {\n-  createEvent,\n-  updateEvent,\n-  deleteEvent,\n-  getAllEvents,\n-  getEventById,\n-} from '../controllers/eventController.js';\n+import { upload } from '../utils/upload.js';\n \n const r = Router();\n-\n-// public or user routes\n-r.get('/', getAllEvents);\n-r.get('/:id', getEventById);\n-\n-// admin routes\n-r.post('/', protect, requireRole('admin'), createEvent);\n-r.put('/:id', protect, requireRole('admin'), updateEvent);\n-r.delete('/:id', protect, requireRole('admin'), deleteEvent);\n-\n+r.get('/', listEvents);\n+r.get('/:id', getEvent);\n+r.post('/', protect, requireRole('admin'), upload.array('media', 5), createEvent);\n+r.patch('/:id', protect, requireRole('admin'), updateEvent);\n+r.delete('/:id', protect, requireRole('admin'), removeEvent);\n export default r;\n"
+                },
+                {
+                    "date": 1760511445821,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,18 @@\n+// server/src/routes/eventRoutes.js\n import { Router } from 'express';\n import { listEvents, getEvent, createEvent, updateEvent, removeEvent } from '../controllers/eventController.js';\n import { protect, requireRole } from '../middleware/authMiddleware.js';\n import { upload } from '../utils/upload.js';\n \n const r = Router();\n+\n+// Public\n r.get('/', listEvents);\n r.get('/:id', getEvent);\n+\n+// Admin\n r.post('/', protect, requireRole('admin'), upload.array('media', 5), createEvent);\n-r.patch('/:id', protect, requireRole('admin'), updateEvent);\n+r.patch('/:id', protect, requireRole('admin'), upload.array('media', 5), updateEvent); // <— add this\n r.delete('/:id', protect, requireRole('admin'), removeEvent);\n+\n export default r;\n"
+                }
+            ],
+            "date": 1760416800011,
+            "name": "Commit-0",
+            "content": "import { Router } from 'express';\nimport { listEvents, getEvent, createEvent, updateEvent, removeEvent } from '../controllers/eventController.js';\nimport { protect, requireRole } from '../middleware/authMiddleware.js';\nimport { upload } from '../utils/upload.js';\n\nconst r = Router();\n\nr.get('/', listEvents);\nr.get('/:id', getEvent);\n\n// note: field name is 'media'; allow multiple files\nr.post('/', protect, requireRole('admin'), upload.array('media', 5), createEvent);\nr.patch('/:id', protect, requireRole('admin'), updateEvent);\nr.delete('/:id', protect, requireRole('admin'), removeEvent);\n\nexport default r;\n"
+        }
+    ]
+}

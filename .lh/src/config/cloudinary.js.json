@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/config/cloudinary.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1760416526513,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1760418983583,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,11 @@\n import { v2 as cloudinary } from 'cloudinary';\n+import dotenv from 'dotenv';\n+dotenv.config();\n \n cloudinary.config({\n   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,\n-  api_key:    process.env.CLOUDINARY_API_KEY,\n+  api_key: process.env.CLOUDINARY_API_KEY,\n   api_secret: process.env.CLOUDINARY_API_SECRET,\n });\n \n export default cloudinary;\n"
+                }
+            ],
+            "date": 1760416526513,
+            "name": "Commit-0",
+            "content": "import { v2 as cloudinary } from 'cloudinary';\n\ncloudinary.config({\n  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,\n  api_key:    process.env.CLOUDINARY_API_KEY,\n  api_secret: process.env.CLOUDINARY_API_SECRET,\n});\n\nexport default cloudinary;\n"
+        }
+    ]
+}
