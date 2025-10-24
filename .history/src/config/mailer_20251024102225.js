@@ -20,12 +20,12 @@ export const transporter = nodemailer.createTransport({
 export async function sendMail({ to, subject, html, text }) {
   if (!to) throw new Error('No recipients defined');
   const info = await transporter.sendMail({ from: MAIL_FROM, to, subject, html, text });
-  
+  // helpful one-line log
   console.log(`[mail] sent -> id=${info.messageId} accepted=${(info.accepted||[]).join(',')}`);
   return info;
 }
 
-
+// Optional: verify at startup (will log once)
 transporter.verify().then(
   () => console.log(`[mail] SMTP verified: ${SMTP_HOST}:${SMTP_PORT}`),
   (e) => console.warn('[mail] SMTP verify failed:', e.message)

@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 16,
+            "activePatchIndex": 17,
             "patches": [
                 {
                     "date": 1760416746763,
@@ -72,6 +72,10 @@
                 {
                     "date": 1761127973710,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,10 +14,10 @@\n   const where = {};\n   if (q) where.$text = { $search: q };\n \n   // ✅ case-insensitive exact match for department/type\n-  if (department) where.department = new RegExp(`^${esc(department)}$`, 'i');\n-  if (type) where.type = new RegExp(`^${esc(type)}$`, 'i');\n+  if (department) where.department = new RegExp(`^${department}$`, 'i');\n+  if (type) where.type = new RegExp(`^${type}$`, 'i');  \n \n   if (from || to) {\n     where.startAt = {\n       ...(from && { $gte: new Date(from) }),\n"
+                },
+                {
+                    "date": 1761281575358,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -128,9 +128,9 @@\n               stream.end(f.buffer);\n             })\n         )\n       );\n-      body.media = uploads; // replace media; or merge with event.media if you prefer\n+      body.media = uploads; \n     }\n \n     const updated = await Event.findByIdAndUpdate(id, body, { new: true });\n     res.json(updated);\n"
                 }
             ],
             "date": 1760416746763,

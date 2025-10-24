@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 13,
+            "activePatchIndex": 14,
             "patches": [
                 {
                     "date": 1760415413617,
@@ -60,6 +60,10 @@
                 {
                     "date": 1760644599988,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,6 @@\n // server/src/controllers/applicationController.js\n+\n import Application from '../models/Application.js';\n import Event from '../models/Event.js';\n import { sendEventAppliedEmail } from '../utils/sendMail.js';\n \n"
+                },
+                {
+                    "date": 1761281564787,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n // server/src/controllers/applicationController.js\n-\n+import mongoose from 'mongoose';\n import Application from '../models/Application.js';\n import Event from '../models/Event.js';\n import { sendEventAppliedEmail } from '../utils/sendMail.js';\n \n@@ -109,12 +109,9 @@\n     return res.status(500).json({ message: 'Error listing applications' });\n   }\n }\n \n-/**\n- * ADMIN: Applications per event stats\n- * GET /api/v1/applications/stats\n- */\n+\n export async function applicationStats(req, res) {\n   try {\n     const grouped = await Application.aggregate([\n       { $group: { _id: '$event', count: { $sum: 1 } } },\n"
                 }
             ],
             "date": 1760415413616,

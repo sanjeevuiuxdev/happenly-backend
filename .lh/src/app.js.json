@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 3,
+            "activePatchIndex": 5,
             "patches": [
                 {
                     "date": 1760641784044,
@@ -20,6 +20,14 @@
                 {
                     "date": 1760645999769,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,9 @@\n connectDB();\n \n const app = express();\n app.use(express.json());\n+app.use(express.urlencoded({ extended: true }));\n app.use(cookieParser());\n app.use(cors({\n     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n     credentials: true,\n"
+                },
+                {
+                    "date": 1761289951263,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,12 @@\n const app = express();\n app.use(express.json());\n app.use(express.urlencoded({ extended: true }));\n app.use(cookieParser());\n+\n+\n+\n+\n app.use(cors({\n     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n     credentials: true,\n   }));\n"
+                },
+                {
+                    "date": 1761289968256,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,14 +16,18 @@\n app.use(express.urlencoded({ extended: true }));\n app.use(cookieParser());\n \n \n+const allowedOrigins = [\n+  'http://localhost:5173',\n+  'https://happenly-frontend.onrender.com'\n+];\n \n \n-app.use(cors({\n-    origin: process.env.CLIENT_URL || 'http://localhost:5173',\n-    credentials: true,\n-  }));\n+// app.use(cors({\n+//     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n+//     credentials: true,\n+//   }));\n \n app.use('/api/v1/auth', authRoutes);\n app.use('/api/v1/events', eventRoutes);\n app.use('/api/v1/applications', applicationRoutes);\n"
                 }
             ],
             "date": 1760641784044,

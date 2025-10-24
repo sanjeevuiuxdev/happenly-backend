@@ -23,24 +23,10 @@ const allowedOrigins = [
 ];
 
 
-// app.use(cors({
-//     origin: process.env.CLIENT_URL || 'http://localhost:5173',
-//     credentials: true,
-//   }));
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like Postman or server-to-server)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('CORS not allowed for this origin: ' + origin));
-    }
-  },
-  credentials: true,
-}));
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
+  }));
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/events', eventRoutes);

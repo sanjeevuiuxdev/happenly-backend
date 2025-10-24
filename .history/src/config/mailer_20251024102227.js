@@ -25,7 +25,7 @@ export async function sendMail({ to, subject, html, text }) {
   return info;
 }
 
-
+// Optional: verify at startup (will log once)
 transporter.verify().then(
   () => console.log(`[mail] SMTP verified: ${SMTP_HOST}:${SMTP_PORT}`),
   (e) => console.warn('[mail] SMTP verify failed:', e.message)
