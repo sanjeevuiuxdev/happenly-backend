@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/utils/upload.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1760416560603,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1761137045652,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import multer from 'multer';\n \n-const storage = multer.memoryStorage(); // keep in memory; we’ll stream to Cloudinary\n+const storage = multer.memoryStorage(); \n \n const allowed = new Set([\n   'image/jpeg', 'image/png', 'image/webp', 'image/gif',\n   'video/mp4', 'video/quicktime', 'video/webm'\n"
+                }
+            ],
+            "date": 1760416560603,
+            "name": "Commit-0",
+            "content": "import multer from 'multer';\n\nconst storage = multer.memoryStorage(); // keep in memory; we’ll stream to Cloudinary\n\nconst allowed = new Set([\n  'image/jpeg', 'image/png', 'image/webp', 'image/gif',\n  'video/mp4', 'video/quicktime', 'video/webm'\n]);\n\nfunction fileFilter(_req, file, cb) {\n  if (!allowed.has(file.mimetype)) return cb(new Error('Unsupported file type'), false);\n  cb(null, true);\n}\n\nexport const upload = multer({\n  storage,\n  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file (tweak if you like)\n  fileFilter\n});\n"
+        }
+    ]
+}

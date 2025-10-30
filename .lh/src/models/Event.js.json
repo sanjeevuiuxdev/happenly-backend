@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/models/Event.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1760506549952,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1760506549952,
+            "name": "Commit-0",
+            "content": "import mongoose from 'mongoose';\n\nexport const DEPARTMENTS = ['IT', 'CS', 'ME', 'Other'];\n\nconst eventSchema = new mongoose.Schema(\n  {\n    title: { type: String, required: true, text: true },\n    description: { type: String, text: true },\n\n    // dropdown choices\n    department: { type: String, enum: DEPARTMENTS, required: true },\n\n    type: String,\n    tags: [String],\n    startAt: Date,\n    endAt: Date,\n\n    location: { name: String, lng: Number, lat: Number },\n\n    // media (image/video from Cloudinary)\n    media: [{ url: String, kind: { type: String, enum: ['image', 'video'] } }],\n\n    capacity: Number,\n    popularity: { type: Number, default: 0 },\n\n    // organizer details (name + company + optional email)\n    organizer: {\n      name: { type: String, trim: true },\n      company: { type: String, trim: true },\n      email: { type: String, trim: true },\n    },\n\n    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }\n  },\n  { timestamps: true }\n);\n\neventSchema.index({ title: 'text', description: 'text', tags: 'text' });\n\nexport default mongoose.model('Event', eventSchema);\n"
+        }
+    ]
+}

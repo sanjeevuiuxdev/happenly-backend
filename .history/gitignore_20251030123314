@@ -1,0 +1,12 @@
+# runtime / secrets
+.env
+.env.*
+.history
+uploads
+node_modules
+
+# misc
+.DS_Store
+Thumbs.db
+dist
+build

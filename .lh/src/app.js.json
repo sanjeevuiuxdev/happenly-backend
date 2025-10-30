@@ -1,0 +1,62 @@
+{
+    "sourceFile": "src/app.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 11,
+            "patches": [
+                {
+                    "date": 1760641784044,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1760641790703,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,7 +18,8 @@\n \n app.use('/api/v1/auth', authRoutes);\n app.use('/api/v1/events', eventRoutes);\n app.use('/api/v1/applications', applicationRoutes);\n+app.use('/api/v1/debug-mail', debugMailRoutes);\n app.get('/', (_, res) => res.send('Happennly API running'));\n \n export default app;\n"
+                },
+                {
+                    "date": 1760645978625,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,12 @@\n \n const app = express();\n app.use(express.json());\n app.use(cookieParser());\n-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));\n+app.use(cors({\n+    origin: process.env.CLIENT_URL || 'http://localhost:5173',\n+    credentials: true,\n+  }));\n \n app.use('/api/v1/auth', authRoutes);\n app.use('/api/v1/events', eventRoutes);\n app.use('/api/v1/applications', applicationRoutes);\n"
+                },
+                {
+                    "date": 1760645999769,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,9 @@\n connectDB();\n \n const app = express();\n app.use(express.json());\n+app.use(express.urlencoded({ extended: true }));\n app.use(cookieParser());\n app.use(cors({\n     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n     credentials: true,\n"
+                },
+                {
+                    "date": 1761289951263,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,12 @@\n const app = express();\n app.use(express.json());\n app.use(express.urlencoded({ extended: true }));\n app.use(cookieParser());\n+\n+\n+\n+\n app.use(cors({\n     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n     credentials: true,\n   }));\n"
+                },
+                {
+                    "date": 1761289968256,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,14 +16,18 @@\n app.use(express.urlencoded({ extended: true }));\n app.use(cookieParser());\n \n \n+const allowedOrigins = [\n+  'http://localhost:5173',\n+  'https://happenly-frontend.onrender.com'\n+];\n \n \n-app.use(cors({\n-    origin: process.env.CLIENT_URL || 'http://localhost:5173',\n-    credentials: true,\n-  }));\n+// app.use(cors({\n+//     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n+//     credentials: true,\n+//   }));\n \n app.use('/api/v1/auth', authRoutes);\n app.use('/api/v1/events', eventRoutes);\n app.use('/api/v1/applications', applicationRoutes);\n"
+                },
+                {
+                    "date": 1761679788996,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,11 +27,27 @@\n //     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n //     credentials: true,\n //   }));\n \n+app.use(cors({\n+  origin: function (origin, callback) {\n+    // allow requests with no origin (like Postman or server-to-server)\n+    if (!origin) return callback(null, true);\n+\n+    if (allowedOrigins.includes(origin)) {\n+      return callback(null, true);\n+    } else {\n+      return callback(new Error('CORS not allowed for this origin: ' + origin));\n+    }\n+  },\n+  credentials: true,\n+}));\n+\n app.use('/api/v1/auth', authRoutes);\n app.use('/api/v1/events', eventRoutes);\n app.use('/api/v1/applications', applicationRoutes);\n app.use('/api/v1/debug-mail', debugMailRoutes);\n app.get('/', (_, res) => res.send('Happennly API running'));\n \n+app.use('/api/v1/ai', aiRoutes);\n+\n export default app;\n"
+                },
+                {
+                    "date": 1761679798242,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,7 +47,7 @@\n app.use('/api/v1/applications', applicationRoutes);\n app.use('/api/v1/debug-mail', debugMailRoutes);\n app.get('/', (_, res) => res.send('Happennly API running'));\n \n-app.use('/api/v1/ai', aiRoutes);\n+app.use('/api/v1/ai', ai);\n \n export default app;\n"
+                },
+                {
+                    "date": 1761679804252,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,53 @@\n+import express from 'express';\n+import dotenv from 'dotenv';\n+import cors from 'cors';\n+import cookieParser from 'cookie-parser';\n+import connectDB from './config/db.js';\n+import authRoutes from './routes/authRoutes.js';\n+import eventRoutes from './routes/eventRoutes.js';\n+import applicationRoutes from './routes/applicationRoutes.js';\n+import debugMailRoutes from './routes/debugMailRoutes.js';\n+\n+dotenv.config();\n+connectDB();\n+\n+const app = express();\n+app.use(express.json());\n+app.use(express.urlencoded({ extended: true }));\n+app.use(cookieParser());\n+\n+\n+const allowedOrigins = [\n+  'http://localhost:5173',\n+  'https://happenly-frontend.onrender.com'\n+];\n+\n+\n+// app.use(cors({\n+//     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n+//     credentials: true,\n+//   }));\n+\n+app.use(cors({\n+  origin: function (origin, callback) {\n+    // allow requests with no origin (like Postman or server-to-server)\n+    if (!origin) return callback(null, true);\n+\n+    if (allowedOrigins.includes(origin)) {\n+      return callback(null, true);\n+    } else {\n+      return callback(new Error('CORS not allowed for this origin: ' + origin));\n+    }\n+  },\n+  credentials: true,\n+}));\n+\n+app.use('/api/v1/auth', authRoutes);\n+app.use('/api/v1/events', eventRoutes);\n+app.use('/api/v1/applications', applicationRoutes);\n+app.use('/api/v1/debug-mail', debugMailRoutes);\n+app.get('/', (_, res) => res.send('Happennly API running'));\n+\n+app.use('/api/v1/ai', ai);\n+\n+export default app;\n"
+                },
+                {
+                    "date": 1761679820786,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,60 +47,7 @@\n app.use('/api/v1/applications', applicationRoutes);\n app.use('/api/v1/debug-mail', debugMailRoutes);\n app.get('/', (_, res) => res.send('Happennly API running'));\n \n-app.use('/api/v1/ai', ai);\n+app.use('/api/v1/ai', );\n \n export default app;\n-import express from 'express';\n-import dotenv from 'dotenv';\n-import cors from 'cors';\n-import cookieParser from 'cookie-parser';\n-import connectDB from './config/db.js';\n-import authRoutes from './routes/authRoutes.js';\n-import eventRoutes from './routes/eventRoutes.js';\n-import applicationRoutes from './routes/applicationRoutes.js';\n-import debugMailRoutes from './routes/debugMailRoutes.js';\n-\n-dotenv.config();\n-connectDB();\n-\n-const app = express();\n-app.use(express.json());\n-app.use(express.urlencoded({ extended: true }));\n-app.use(cookieParser());\n-\n-\n-const allowedOrigins = [\n-  'http://localhost:5173',\n-  'https://happenly-frontend.onrender.com'\n-];\n-\n-\n-// app.use(cors({\n-//     origin: process.env.CLIENT_URL || 'http://localhost:5173',\n-//     credentials: true,\n-//   }));\n-\n-app.use(cors({\n-  origin: function (origin, callback) {\n-    // allow requests with no origin (like Postman or server-to-server)\n-    if (!origin) return callback(null, true);\n-\n-    if (allowedOrigins.includes(origin)) {\n-      return callback(null, true);\n-    } else {\n-      return callback(new Error('CORS not allowed for this origin: ' + origin));\n-    }\n-  },\n-  credentials: true,\n-}));\n-\n-app.use('/api/v1/auth', authRoutes);\n-app.use('/api/v1/events', eventRoutes);\n-app.use('/api/v1/applications', applicationRoutes);\n-app.use('/api/v1/debug-mail', debugMailRoutes);\n-app.get('/', (_, res) => res.send('Happennly API running'));\n-\n-app.use('/api/v1/ai', ai);\n-\n-export default app;\n"
+                },
+                {
+                    "date": 1761679871402,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,9 @@\n import authRoutes from './routes/authRoutes.js';\n import eventRoutes from './routes/eventRoutes.js';\n import applicationRoutes from './routes/applicationRoutes.js';\n import debugMailRoutes from './routes/debugMailRoutes.js';\n+import aiRoutes from './routes/ai.js';\n \n dotenv.config();\n connectDB();\n \n@@ -47,7 +48,7 @@\n app.use('/api/v1/applications', applicationRoutes);\n app.use('/api/v1/debug-mail', debugMailRoutes);\n app.get('/', (_, res) => res.send('Happennly API running'));\n \n-app.use('/api/v1/ai', );\n+app.use('/api/v1/ai', aiRoutes);\n \n export default app;\n"
+                },
+                {
+                    "date": 1761679897157,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,7 +48,7 @@\n app.use('/api/v1/applications', applicationRoutes);\n app.use('/api/v1/debug-mail', debugMailRoutes);\n app.get('/', (_, res) => res.send('Happennly API running'));\n \n-app.use('/api/v1/ai', aiRoutes);\n \n+\n export default app;\n"
+                }
+            ],
+            "date": 1760641784044,
+            "name": "Commit-0",
+            "content": "import express from 'express';\nimport dotenv from 'dotenv';\nimport cors from 'cors';\nimport cookieParser from 'cookie-parser';\nimport connectDB from './config/db.js';\nimport authRoutes from './routes/authRoutes.js';\nimport eventRoutes from './routes/eventRoutes.js';\nimport applicationRoutes from './routes/applicationRoutes.js';\nimport debugMailRoutes from './routes/debugMailRoutes.js';\n\ndotenv.config();\nconnectDB();\n\nconst app = express();\napp.use(express.json());\napp.use(cookieParser());\napp.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));\n\napp.use('/api/v1/auth', authRoutes);\napp.use('/api/v1/events', eventRoutes);\napp.use('/api/v1/applications', applicationRoutes);\napp.get('/', (_, res) => res.send('Happennly API running'));\n\nexport default app;\n"
+        }
+    ]
+}

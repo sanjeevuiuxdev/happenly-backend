@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/routes/debugMailRoutes.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1760641758055,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1760641758055,
+            "name": "Commit-0",
+            "content": "import { Router } from 'express';\nimport { transporter, sendMail } from '../config/mailer.js';\n\nconst r = Router();\n\nr.get('/verify', async (req, res) => {\n  try {\n    const ok = await transporter.verify();\n    res.json({ ok, host: transporter.options.host, port: transporter.options.port, secure: transporter.options.secure });\n  } catch (e) {\n    res.status(500).json({ ok: false, error: e.message });\n  }\n});\n\nr.post('/send', async (req, res) => {\n  try {\n    const to = process.env.SMTP_USER; // send to yourself (Mailtrap will catch it)\n    const info = await sendMail({\n      to,\n      subject: 'Happenly test',\n      html: '<b>Mail works 🎉</b>',\n    });\n    res.json({ messageId: info.messageId, accepted: info.accepted, response: info.response });\n  } catch (e) {\n    res.status(500).json({ error: e.message });\n  }\n});\n\nexport default r;\n"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "sourceFile": "gitignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1761807794577,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1761807794577,
+            "name": "Commit-0",
+            "content": "# runtime / secrets\n.env\n.env.*\n.history\nuploads\nnode_modules\n\n# misc\n.DS_Store\nThumbs.db\ndist\nbuild\n"
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "sourceFile": "src/config/mailer.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1760552974567,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1760641865126,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,31 +3,30 @@\n dotenv.config();\n \n const {\n   SMTP_HOST,\n-  SMTP_PORT,\n+  SMTP_PORT = 587,\n   SMTP_USER,\n   SMTP_PASS,\n-  MAIL_FROM = `Happenly <no-reply@happenly.dev>`,\n+  MAIL_FROM = 'Happenly <no-reply@happenly.dev>',\n } = process.env;\n \n-if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {\n-  console.warn('[mail] SMTP credentials are not set. Emails will fail.');\n-}\n-\n-const transporter = nodemailer.createTransport({\n+export const transporter = nodemailer.createTransport({\n   host: SMTP_HOST,\n-  port: Number(SMTP_PORT || 587),\n-  secure: Number(SMTP_PORT) === 465, // true for 465, false for ~587\n+  port: Number(SMTP_PORT),\n+  secure: Number(SMTP_PORT) === 465, // 465 => true, 587/2525 => false\n   auth: { user: SMTP_USER, pass: SMTP_PASS },\n });\n \n export async function sendMail({ to, subject, html, text }) {\n-  const info = await transporter.sendMail({\n-    from: MAIL_FROM,\n-    to,\n-    subject,\n-    text,\n-    html,\n-  });\n+  if (!to) throw new Error('No recipients defined');\n+  const info = await transporter.sendMail({ from: MAIL_FROM, to, subject, html, text });\n+  // helpful one-line log\n+  console.log(`[mail] sent -> id=${info.messageId} accepted=${(info.accepted||[]).join(',')}`);\n   return info;\n }\n+\n+// Optional: verify at startup (will log once)\n+transporter.verify().then(\n+  () => console.log(`[mail] SMTP verified: ${SMTP_HOST}:${SMTP_PORT}`),\n+  (e) => console.warn('[mail] SMTP verify failed:', e.message)\n+);\n"
+                },
+                {
+                    "date": 1761281545241,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n \n export const transporter = nodemailer.createTransport({\n   host: SMTP_HOST,\n   port: Number(SMTP_PORT),\n-  secure: Number(SMTP_PORT) === 465, // 465 => true, 587/2525 => false\n+  secure: Number(SMTP_PORT) === 465, \n   auth: { user: SMTP_USER, pass: SMTP_PASS },\n });\n \n export async function sendMail({ to, subject, html, text }) {\n"
+                },
+                {
+                    "date": 1761281552395,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,14 +19,14 @@\n \n export async function sendMail({ to, subject, html, text }) {\n   if (!to) throw new Error('No recipients defined');\n   const info = await transporter.sendMail({ from: MAIL_FROM, to, subject, html, text });\n-  // helpful one-line log\n+  \n   console.log(`[mail] sent -> id=${info.messageId} accepted=${(info.accepted||[]).join(',')}`);\n   return info;\n }\n \n-// Optional: verify at startup (will log once)\n+\n transporter.verify().then(\n   () => console.log(`[mail] SMTP verified: ${SMTP_HOST}:${SMTP_PORT}`),\n   (e) => console.warn('[mail] SMTP verify failed:', e.message)\n );\n"
+                }
+            ],
+            "date": 1760552974567,
+            "name": "Commit-0",
+            "content": "import nodemailer from 'nodemailer';\nimport dotenv from 'dotenv';\ndotenv.config();\n\nconst {\n  SMTP_HOST,\n  SMTP_PORT,\n  SMTP_USER,\n  SMTP_PASS,\n  MAIL_FROM = `Happenly <no-reply@happenly.dev>`,\n} = process.env;\n\nif (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {\n  console.warn('[mail] SMTP credentials are not set. Emails will fail.');\n}\n\nconst transporter = nodemailer.createTransport({\n  host: SMTP_HOST,\n  port: Number(SMTP_PORT || 587),\n  secure: Number(SMTP_PORT) === 465, // true for 465, false for ~587\n  auth: { user: SMTP_USER, pass: SMTP_PASS },\n});\n\nexport async function sendMail({ to, subject, html, text }) {\n  const info = await transporter.sendMail({\n    from: MAIL_FROM,\n    to,\n    subject,\n    text,\n    html,\n  });\n  return info;\n}\n"
+        }
+    ]
+}

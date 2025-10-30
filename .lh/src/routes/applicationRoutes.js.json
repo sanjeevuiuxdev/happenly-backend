@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/routes/applicationRoutes.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1760415436606,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1761281600066,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,8 @@\n r.post('/', protect, apply);\n r.get('/event/:id', protect, requireRole('admin'), listApplicants);\n \n // NEW admin endpoints\n-r.get('/', protect, requireRole('admin'), listAllApplications);     // ?eventId=&status=&page=&limit=\n+r.get('/', protect, requireRole('admin'), listAllApplications);     \n r.get('/stats', protect, requireRole('admin'), applicationStats);\n \n export default r;\n"
+                }
+            ],
+            "date": 1760415436606,
+            "name": "Commit-0",
+            "content": "import { Router } from 'express';\nimport { apply, listApplicants, listAllApplications, applicationStats } from '../controllers/applicationController.js';\nimport { protect, requireRole } from '../middleware/authMiddleware.js';\n\nconst r = Router();\nr.post('/', protect, apply);\nr.get('/event/:id', protect, requireRole('admin'), listApplicants);\n\n// NEW admin endpoints\nr.get('/', protect, requireRole('admin'), listAllApplications);     // ?eventId=&status=&page=&limit=\nr.get('/stats', protect, requireRole('admin'), applicationStats);\n\nexport default r;\n"
+        }
+    ]
+}

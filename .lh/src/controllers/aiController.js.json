@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/controllers/aiController.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1761674668882,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1761674668882,
+            "name": "Commit-0",
+            "content": "import Event from '../models/Event.js';\nimport OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env.OPENAI_API_KEY\n});\n\n// make a short context from events\nfunction buildEventContext(events) {\n  return events.map(e => {\n    const start = e.startAt ? new Date(e.startAt).toLocaleString() : '';\n    const loc =\n      typeof e.location === 'string'\n        ? (/<iframe/i.test(e.location) ? 'See map' : e.location)\n        : (e.location?.name || 'TBA');\n\n    return `\nEvent Title: ${e.title}\nDate/Time: ${start}\nLocation: ${loc}\nDepartment: ${e.department || '-'}\nType: ${e.type || '-'}\nDescription: ${e.description || '-'}\n`.trim();\n  }).join('\\n\\n---\\n\\n');\n}\n\nexport async function askAi(req, res) {\n  try {\n    const { question } = req.body;\n    if (!question || !question.trim()) {\n      return res.status(400).json({ message: 'Question is required' });\n    }\n\n    // grab recent events so the AI can reference them if needed\n    const events = await Event.find({})\n      .sort({ startAt: -1, createdAt: -1 })\n      .limit(20)\n      .lean();\n\n    const context = buildEventContext(events);\n\n    // new prompt:\n    const prompt = `\nYou are Happennly AI.\n\n1. You are allowed to answer general questions using your own general/world knowledge.\n   - Example: \"what is contest?\", \"explain what coding means\", \"tell me a joke\", \"today is sunday\" etc.\n   - Answer normally in a short, friendly way.\n\n2. BUT if the user's question is clearly about a specific Happennly event\n   (for example they mention an event title, like \"coding-6\", \"code round\",\n   or they ask \"when is coding-6\", \"where is coding-6 happening\"),\n   then you MUST answer using ONLY the event data below.\n   If something is missing, say you don't have that info instead of guessing.\n\nEVENT DATA (use this ONLY if question is about these events):\n${context}\n\nUSER QUESTION:\n\"${question}\"\n\nNow give your answer in plain, friendly language:\n`;\n\n    const completion = await client.responses.create({\n      model: 'gpt-4o-mini',\n      input: prompt,\n      max_output_tokens: 250,\n      temperature: 0.5\n    });\n\n    // extract text safely\n    let aiText = '';\n    try {\n      aiText =\n        completion.output?.[0]?.content?.[0]?.text?.trim() ||\n        completion.output_text?.trim() ||\n        '';\n    } catch {\n      aiText = '';\n    }\n\n    if (!aiText) {\n      aiText = \"Sorry, I couldn't generate an answer.\";\n    }\n\n    return res.json({ answer: aiText });\n\n  } catch (err) {\n    console.error('[AI] error:', err);\n    return res.status(500).json({ message: 'AI error' });\n  }\n}\n"
+        }
+    ]
+}

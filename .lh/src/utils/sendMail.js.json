@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/utils/sendMail.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1760553020566,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1760596430990,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,11 +11,12 @@\n   return mail({ to, subject: `Applied: ${event.title}`, html });\n }\n \n export async function sendEventCreatedEmail({ to, event }) {\n-  const html = eventCreated({\n-    eventTitle: event.title,\n-    dateStr: new Date(event.startAt).toLocaleString(),\n-    location: event.location?.name,\n-  });\n-  return mail({ to, subject: `Created: ${event.title}`, html });\n-}\n+    const html = eventCreated({\n+      eventTitle: event.title,\n+      dateStr: new Date(event.startAt).toLocaleString(),\n+      location: event.location?.name,\n+    });\n+    return mail({ to, subject: `Created: ${event.title}`, html });\n+  }\n+  \n"
+                }
+            ],
+            "date": 1760553020565,
+            "name": "Commit-0",
+            "content": "import { sendMail as mail } from '../config/mailer.js';\nimport { eventApplied, eventCreated } from './emailTemplates.js';\n\nexport async function sendEventAppliedEmail({ to, userName, event }) {\n  const html = eventApplied({\n    userName,\n    eventTitle: event.title,\n    dateStr: new Date(event.startAt).toLocaleString(),\n    location: event.location?.name,\n  });\n  return mail({ to, subject: `Applied: ${event.title}`, html });\n}\n\nexport async function sendEventCreatedEmail({ to, event }) {\n  const html = eventCreated({\n    eventTitle: event.title,\n    dateStr: new Date(event.startAt).toLocaleString(),\n    location: event.location?.name,\n  });\n  return mail({ to, subject: `Created: ${event.title}`, html });\n}\n"
+        }
+    ]
+}

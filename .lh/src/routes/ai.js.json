@@ -1,0 +1,30 @@
+{
+    "sourceFile": "src/routes/ai.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1761678245051,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1761678251718,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-// server/routes/ai.js  (example)\n+\n import express from 'express';\n import axios from 'axios';\n const router = express.Router();\n \n"
+                },
+                {
+                    "date": 1761679745613,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,20 +1,34 @@\n-\n import express from 'express';\n import axios from 'axios';\n+\n const router = express.Router();\n \n+// POST /api/v1/ai/ask\n router.post('/ask', async (req, res) => {\n   const { question } = req.body;\n-  if (!question) return res.status(400).json({ message: 'question required' });\n \n+  if (!question || !question.trim()) {\n+    return res.status(400).json({ message: 'question required' });\n+  }\n+\n   try {\n     const resp = await axios.post(\n       'https://api.openai.com/v1/chat/completions',\n       {\n-        model: 'gpt-4o-mini',        // or gpt-4o, gpt-4o-mini-preview, gpt-4o-mini-1, or gpt-4. Use the model you want.\n-        messages: [{ role: 'user', content: question }],\n-        max_tokens: 500\n+        model: 'gpt-4o-mini',        // light, fast, cheap\n+        messages: [\n+          {\n+            role: 'system',\n+            content:\n+              'You are a helpful assistant for a college events portal. Answer clearly in plain English. Do not include code fences unless user asked for code.'\n+          },\n+          {\n+            role: 'user',\n+            content: question\n+          }\n+        ],\n+        max_tokens: 300\n       },\n       {\n         headers: {\n           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,\n@@ -22,13 +36,18 @@\n         }\n       }\n     );\n \n-    const answer = resp.data.choices?.[0]?.message?.content || '';\n-    return res.json({ answer });\n+    const aiText =\n+      resp.data?.choices?.[0]?.message?.content?.trim() ||\n+      'Sorry, I could not generate an answer.';\n+\n+    return res.json({ answer: aiText });\n   } catch (err) {\n-    console.error('OpenAI error', err.response?.data || err.message);\n-    return res.status(500).json({ message: 'AI error', detail: err.response?.data || err.message });\n+    console.error('[ai] error talking to OpenAI:', err?.response?.data || err.message);\n+    return res\n+      .status(500)\n+      .json({ message: 'AI service failed. Please try again later.' });\n   }\n });\n \n export default router;\n"
+                },
+                {
+                    "date": 1761680851001,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   try {\n     const resp = await axios.post(\n       'https://api.openai.com/v1/chat/completions',\n       {\n-        model: 'gpt-4o-mini',        // light, fast, cheap\n+        model: 'gpt-4o-mini',\n         messages: [\n           {\n             role: 'system',\n             content:\n@@ -43,8 +43,9 @@\n \n     return res.json({ answer: aiText });\n   } catch (err) {\n     console.error('[ai] error talking to OpenAI:', err?.response?.data || err.message);\n+\n     return res\n       .status(500)\n       .json({ message: 'AI service failed. Please try again later.' });\n   }\n"
+                }
+            ],
+            "date": 1761678245051,
+            "name": "Commit-0",
+            "content": "// server/routes/ai.js  (example)\nimport express from 'express';\nimport axios from 'axios';\nconst router = express.Router();\n\nrouter.post('/ask', async (req, res) => {\n  const { question } = req.body;\n  if (!question) return res.status(400).json({ message: 'question required' });\n\n  try {\n    const resp = await axios.post(\n      'https://api.openai.com/v1/chat/completions',\n      {\n        model: 'gpt-4o-mini',        // or gpt-4o, gpt-4o-mini-preview, gpt-4o-mini-1, or gpt-4. Use the model you want.\n        messages: [{ role: 'user', content: question }],\n        max_tokens: 500\n      },\n      {\n        headers: {\n          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,\n          'Content-Type': 'application/json'\n        }\n      }\n    );\n\n    const answer = resp.data.choices?.[0]?.message?.content || '';\n    return res.json({ answer });\n  } catch (err) {\n    console.error('OpenAI error', err.response?.data || err.message);\n    return res.status(500).json({ message: 'AI error', detail: err.response?.data || err.message });\n  }\n});\n\nexport default router;\n"
+        }
+    ]
+}
